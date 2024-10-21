@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Engine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            margin-bottom: 20px;
+        }
+        label, input, textarea {
+            display: block;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Rule Engine</h1>
+
+    <!-- Create Rule Section -->
+    <div class="container">
+        <h2>Create Rule</h2>
+        <label for="ruleName">Rule Name:</label>
+        <input type="text" id="ruleName" placeholder="Enter rule name">
+
+        <label for="ruleExpression">Enter rule (e.g., age > 30 AND department = 'Sales'):</label>
+        <textarea id="ruleExpression" rows="4" placeholder="Enter rule"></textarea>
+
+        <button onclick="createRule()">Create Rule</button>
+    </div>
+
+    <!-- Combine Rules Section -->
+    <div class="container">
+        <h2>Combine Rules</h2>
+        <label for="ruleIds">Rule IDs (comma-separated):</label>
+        <input type="text" id="ruleIds" placeholder="Enter rule IDs to combine">
+
+        <button onclick="combineRules()">Combine Rules</button>
+    </div>
+
+    <!-- Evaluate Rule Section -->
+    <div class="container">
+        <h2>Evaluate Rule</h2>
+        <label for="evalRuleId">Rule ID:</label>
+        <input type="text" id="evalRuleId" placeholder="Enter rule ID to evaluate">
+
+        <label for="jsonData">JSON data (e.g., {'age': 35, 'department': 'Sales'}):</label>
+        <textarea id="jsonData" rows="4" placeholder="Enter JSON data"></textarea>
+
+        <button onclick="evaluateRule()">Evaluate Rule</button>
+
+        <h3>Result:</h3>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // Create Rule
+        function createRule() {
+            const ruleName = document.getElementById("ruleName").value;
+            const ruleExpression = document.getElementById("ruleExpression").value;
+
+            // You would send this data to the backend for storage
+            console.log(`Rule Created: ${ruleName} -> ${ruleExpression}`);
+            alert("Rule created successfully!");
+        }
+
+        // Combine Rules
+        function combineRules() {
+            const ruleIds = document.getElementById("ruleIds").value;
+            
+            // Backend would combine rules based on these IDs
+            console.log(`Combined Rules: ${ruleIds}`);
+            alert("Rules combined successfully!");
+        }
+
+        // Evaluate Rule
+        function evaluateRule() {
+            const evalRuleId = document.getElementById("evalRuleId").value;
+            const jsonData = document.getElementById("jsonData").value;
+
+            // Send the rule ID and JSON data to the backend for evaluation
+            console.log(`Evaluating Rule ID: ${evalRuleId} with Data: ${jsonData}`);
+            
+            // Simulate a result for now
+            const result = Math.random() > 0.5 ? "Rule passed!" : "Rule failed!";
+            document.getElementById("result").innerText = result;
+        }
+    </script>
+</body>
+</html>
