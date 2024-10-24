@@ -1,97 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rule Engine</title>
     <style>
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
             margin: 20px;
+            transition: box-shadow 0.3s ease-in-out;
         }
+
+        .wrapper:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #0056b3;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: #0056b3;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
+
         .container {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
-        label, input, textarea {
+
+        label {
+            font-size: 1rem;
+            font-weight: 600;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 10px rgba(0, 86, 179, 0.1);
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
         button {
-            margin-top: 10px;
+            background-color: #0056b3;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: #003d7a;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Result Styling */
+        #result-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #result {
+            font-size: 1.3rem;
+            color: #006600;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+
+        #result.fail {
+            color: #d9534f;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .wrapper {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
+
 <body>
-    <h1>Rule Engine</h1>
+    <div class="wrapper">
+        <h1>Rule Engine</h1>
 
-    <!-- Create Rule Section -->
-    <div class="container">
-        <h2>Create Rule</h2>
-        <label for="ruleName">Rule Name:</label>
-        <input type="text" id="ruleName" placeholder="Enter rule name">
+        <!-- Create Rule Section -->
+        <div class="container">
+            <h2>Create Rule</h2>
+            <label for="ruleName">Rule Name:</label>
+            <input type="text" id="ruleName" placeholder="Enter rule name">
 
-        <label for="ruleExpression">Enter rule (e.g., age > 30 AND department = 'Sales'):</label>
-        <textarea id="ruleExpression" rows="4" placeholder="Enter rule"></textarea>
+            <label for="ruleExpression">Enter rule (e.g., age > 30 AND department = 'Sales'):</label>
+            <textarea id="ruleExpression" placeholder="Enter rule"></textarea>
 
-        <button onclick="createRule()">Create Rule</button>
-    </div>
+            <button onclick="createRule()">Create Rule</button>
+        </div>
 
-    <!-- Combine Rules Section -->
-    <div class="container">
-        <h2>Combine Rules</h2>
-        <label for="ruleIds">Rule IDs (comma-separated):</label>
-        <input type="text" id="ruleIds" placeholder="Enter rule IDs to combine">
+        <!-- Combine Rules Section -->
+        <div class="container">
+            <h2>Combine Rules</h2>
+            <label for="ruleIds">Rule IDs (comma-separated):</label>
+            <input type="text" id="ruleIds" placeholder="Enter rule IDs to combine">
 
-        <button onclick="combineRules()">Combine Rules</button>
-    </div>
+            <button onclick="combineRules()">Combine Rules</button>
+        </div>
 
-    <!-- Evaluate Rule Section -->
-    <div class="container">
-        <h2>Evaluate Rule</h2>
-        <label for="evalRuleId">Rule ID:</label>
-        <input type="text" id="evalRuleId" placeholder="Enter rule ID to evaluate">
+        <!-- Evaluate Rule Section -->
+        <div class="container">
+            <h2>Evaluate Rule</h2>
+            <label for="evalRuleId">Rule ID:</label>
+            <input type="text" id="evalRuleId" placeholder="Enter rule ID to evaluate">
 
-        <label for="jsonData">JSON data (e.g., {'age': 35, 'department': 'Sales'}):</label>
-        <textarea id="jsonData" rows="4" placeholder="Enter JSON data"></textarea>
+            <label for="jsonData">JSON data (e.g., {"age": 35, "department": "Sales"}):</label>
+            <textarea id="jsonData" placeholder="Enter JSON data"></textarea>
 
-        <button onclick="evaluateRule()">Evaluate Rule</button>
+            <button onclick="evaluateRule()">Evaluate Rule</button>
 
-        <h3>Result:</h3>
-        <p id="result"></p>
+            <div id="result-container">
+                <h3>Result:</h3>
+                <p id="result"></p>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Create Rule
-        function createRule() {
-            const ruleName = document.getElementById("ruleName").value;
-            const ruleExpression = document.getElementById("ruleExpression").value;
+        // Helper function to display results
+        function displayResult(message, passed) {
+            const resultContainer = document.getElementById("result-container");
+            const resultText = document.getElementById("result");
+            resultText.textContent = message;
+            resultText.className = passed ? "" : "fail";
+            resultContainer.style.display = "block";
+        }
 
-            // You would send this data to the backend for storage
-            console.log(`Rule Created: ${ruleName} -> ${ruleExpression}`);
-            alert("Rule created successfully!");
+        // Create Rule
+        async function createRule() {
+            const ruleName = document.getElementById("ruleName").value.trim();
+            const ruleExpression = document.getElementById("ruleExpression").value.trim();
+
+            if (!ruleName || !ruleExpression) {
+                alert("Please enter both a rule name and expression.");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/rules/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ruleName: ruleName, ruleString: ruleExpression }),
+                });
+
+                if (response.ok) {
+                    const ruleId = await response.json();
+                    alert(`Rule created successfully! Rule ID: ${ruleId}`);
+                } else {
+                    alert('Failed to create rule');
+                }
+            } catch (error) {
+                console.error("Error creating rule:", error);
+                alert('An error occurred while creating the rule.');
+            }
         }
 
         // Combine Rules
-        function combineRules() {
-            const ruleIds = document.getElementById("ruleIds").value;
-            
-            // Backend would combine rules based on these IDs
-            console.log(`Combined Rules: ${ruleIds}`);
-            alert("Rules combined successfully!");
+        async function combineRules() {
+            const ruleIds = document.getElementById("ruleIds").value.split(',').map(id => parseInt(id.trim()));
+
+            if (!ruleIds.length || ruleIds.some(isNaN)) {
+                alert("Please enter valid rule IDs.");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/rules/combine', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(ruleIds),
+                });
+
+                if (response.ok) {
+                    const combinedRuleId = await response.json();
+                    alert(`Rules combined successfully! Combined Rule ID: ${combinedRuleId}`);
+                } else {
+                    alert('Failed to combine rules');
+                }
+            } catch (error) {
+                console.error("Error combining rules:", error);
+                alert('An error occurred while combining the rules.');
+            }
         }
 
         // Evaluate Rule
-        function evaluateRule() {
-            const evalRuleId = document.getElementById("evalRuleId").value;
-            const jsonData = document.getElementById("jsonData").value;
+        async function evaluateRule() {
+            const evalRuleId = document.getElementById("evalRuleId").value.trim();
+            const jsonData = document.getElementById("jsonData").value.trim();
 
-            // Send the rule ID and JSON data to the backend for evaluation
-            console.log(`Evaluating Rule ID: ${evalRuleId} with Data: ${jsonData}`);
-            
-            // Simulate a result for now
-            const result = Math.random() > 0.5 ? "Rule passed!" : "Rule failed!";
-            document.getElementById("result").innerText = result;
+            if (!evalRuleId || !jsonData) {
+                alert("Please enter a rule ID and JSON data.");
+                return;
+            }
+
+            try {
+                const jsonParsed = JSON.parse(jsonData);
+
+                const response = await fetch(`/api/rules/evaluate/${evalRuleId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jsonParsed),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    displayResult(result ? "Rule passed!" : "Rule failed!", result);
+                } else {
+                    alert('Failed to evaluate rule');
+                }
+            } catch (error) {
+                console.error("Error evaluating rule:", error);
+                alert('An error occurred while evaluating the rule.');
+            }
         }
     </script>
 </body>
+
 </html>
